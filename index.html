@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Han Xin Protocol - Visualisations</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --bg-color: #f8f9fa;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 1.5rem;
+            margin: 0 0 5px 0;
+        }
+        .header p {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin: 0;
+        }
+        
+        /* Navigation Buttons */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            width: 100%;
+            max-width: 800px;
+        }
+        .btn {
+            background-color: white;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1 1 30%;
+            text-align: center;
+        }
+        .btn.active, .btn:active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .btn.grid-btn {
+            background-color: #27ae60;
+            border-color: #27ae60;
+            color: white;
+        }
+        .btn.grid-btn.active {
+            background-color: #1e8449;
+        }
+
+        /* Display Area */
+        .display-area {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: center;
+            box-sizing: border-box;
+        }
+        
+        /* Single View */
+        .single-view {
+            display: block;
+        }
+        .single-view img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .title-overlay {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Grid View */
+        .grid-view {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        .grid-item {
+            text-align: center;
+        }
+        .grid-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+        .grid-item p {
+            margin: 8px 0 0 0;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 600px) {
+            .btn { flex: 1 1 45%; }
+            .header h1 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Han Xin Protocol (Monte Carlo N=10)</h1>
+        <p>Interactive Spatial Visualisations (ISMB 2026)</p>
+    </div>
+
+    <div class="controls">
+        <div class="btn active" onclick="showSingle('swarm.gif', 'Infiltrator Swarm Logic (FSM)', this)">Swarm Logic</div>
+        <div class="btn" onclick="showSingle('vegf.gif', 'VEGF Sequestration Dynamics', this)">VEGF</div>
+        <div class="btn" onclick="showSingle('vessels.gif', 'Vascular Regression', this)">Vascular</div>
+        <div class="btn" onclick="showSingle('bile.gif', 'Bile Acid Neutralisation', this)">Bile Acid</div>
+        <div class="btn" onclick="showSingle('oxygen.gif', 'Oxygen Map & Hypoxia', this)">Oxygen</div>
+        <div class="btn grid-btn" onclick="showGrid(this)">Show All (Grid)</div>
+    </div>
+
+    <div class="display-area">
+        <div id="singleContainer" class="single-view">
+            <img id="mainImage" src="swarm.gif" alt="Simulation Snapshot">
+            <div id="imageTitle" class="title-overlay">Infiltrator Swarm Logic (FSM)</div>
+        </div>
+
+        <div id="gridContainer" class="grid-view">
+            <div class="grid-item">
+                <img src="swarm.gif" alt="Swarm" loading="lazy">
+                <p>Swarm Logic</p>
+            </div>
+            <div class="grid-item">
+                <img src="vegf.gif" alt="VEGF" loading="lazy">
+                <p>VEGF Sequestration</p>
+            </div>
+            <div class="grid-item">
+                <img src="vessels.gif" alt="Vessels" loading="lazy">
+                <p>Vascular Regression</p>
+            </div>
+            <div class="grid-item">
+                <img src="bile.gif" alt="Bile" loading="lazy">
+                <p>Bile Neutralisation</p>
+            </div>
+            <div class="grid-item">
+                <img src="oxygen.gif" alt="Oxygen" loading="lazy">
+                <p>Oxygen & Hypoxia</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function resetButtons() {
+            let buttons = document.getElementsByClassName("btn");
+            for (let btn of buttons) {
+                btn.classList.remove("active");
+            }
+        }
+
+        function showSingle(imgSrc, titleText, btnElement) {
+            resetButtons();
+            btnElement.classList.add("active");
+            
+            document.getElementById("gridContainer").style.display = "none";
+            document.getElementById("singleContainer").style.display = "block";
+            
+            document.getElementById("mainImage").src = imgSrc;
+            document.getElementById("imageTitle").innerText = titleText;
+        }
+
+        function showGrid(btnElement) {
+            resetButtons();
+            btnElement.classList.add("active");
+            
+            document.getElementById("singleContainer").style.display = "none";
+            document.getElementById("gridContainer").style.display = "grid";
+        }
+    </script>
+
+</body>
+</html>
